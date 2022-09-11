@@ -65,6 +65,6 @@ int main(void) {
      close(new_fd);
      close(sockfd);
      printf("Closing connection");
-
+ 
      return 0;
 }
