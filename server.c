@@ -5,9 +5,11 @@
 #include <sys/socket.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 #define MYPORT "3490"  // the port users will be connecting to
 #define BACKLOG 10     // how many pending connections queue will hold
+#define MAXDATASIZE 100 // max data size 
 
 int main(void) {
      struct sockaddr_storage their_addr;
@@ -51,15 +53,17 @@ int main(void) {
 
      printf("Got connection \n");
 
-     const char* msg = "Hello World";
-     int len, bytes_sent;
+     int bytes_recv;
+     char* msg;
+     if ((bytes_recv = recv(new_fd, msg, MAXDATASIZE-1, 0)) == -1) {
+          perror("receive error");
+          exit(1);
+     }
 
-     len = strlen(msg);
-     bytes_sent = send(new_fd, msg, len, 0);
-     if (bytes_sent == -1) {
-          printf("error sending bytes \n");
-     } else {
-          printf("Send data\n");
+     int bytes_sent;
+     if ((bytes_sent = send(new_fd, msg, strlen(msg), 0)) == -1) {
+          perror("send error");
+          exit(1);
      }
 
      close(new_fd);

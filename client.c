@@ -47,7 +47,18 @@ int main(void) {
     inet_ntop(res->ai_family, get_in_addr((struct sockaddr *)res->ai_addr), s, sizeof s);
     printf("client: connecting to %s\n", s);
 
-     if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
+    const char* msg = "Hello World";
+    int len, bytes_sent;
+
+    len = strlen(msg);
+    bytes_sent = send(sockfd, msg, len, 0);
+    if (bytes_sent == -1) {
+          printf("error sending bytes \n");
+    } else {
+          printf("Send data\n");
+    }
+
+    if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
         perror("recv");
         exit(1);
     }
@@ -59,9 +70,4 @@ int main(void) {
     close(sockfd);
     
     return 0;
-
-
-
-    //  addr_size = sizeof their_addr;
-    //  new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &addr_size);
 }
